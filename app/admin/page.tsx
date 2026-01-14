@@ -27,103 +27,8 @@ interface NotificationType {
 }
 
 // QR Scanner Component
-const QRScanner: React.FC<QRScannerProps> = ({ onScan, onClose }) => {
-  const videoRef = React.useRef<HTMLVideoElement>(null);
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const [error, setError] = useState<string>('');
-
-  useEffect(() => {
-    let stream: MediaStream | null = null;
-    let animationFrame: number | undefined;
-
-    const startCamera = async () => {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }
-        });
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-        }
-      } catch (err) {
-        setError('Camera access denied. Use manual search instead.');
-      }
-    };
-
-    startCamera();
-
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-    };
-  }, []);
-
-  // Simulate QR scan - in production use jsQR library
-  const handleManualInput = () => {
-    const ticketId = prompt('Enter Ticket ID (e.g., EVT-ABC12345):');
-    if (ticketId) {
-      onScan(ticketId.trim());
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4">
-      <div className="relative w-full max-w-md">
-        <button
-          onClick={onClose}
-          className="absolute -top-12 right-0 text-white hover:text-gray-300"
-        >
-          <XCircle className="w-8 h-8" />
-        </button>
-
-        <div className="bg-white rounded-xl p-6">
-          <h3 className="text-xl font-bold mb-4">Scan QR Code</h3>
-
-          {error ? (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 text-sm mb-4">
-              {error}
-            </div>
-          ) : (
-            <div className="relative mb-4">
-              <video
-                ref={videoRef}
-                className="w-full rounded-lg bg-gray-900"
-                playsInline
-                muted
-              />
-              <canvas ref={canvasRef} className="hidden" />
-
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-48 h-48 border-4 border-green-500 rounded-lg relative">
-                  <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-white"></div>
-                  <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-white"></div>
-                  <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-white"></div>
-                  <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-white"></div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <button
-            onClick={handleManualInput}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700"
-          >
-            Enter Ticket ID Manually
-          </button>
-
-          <p className="text-xs text-gray-500 mt-3 text-center">
-            Note: Install jsQR for automatic scanning
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
+import QRScanner from '@/components/QRScanner';
+import jsQR from 'jsqr';
 
 // Main Admin Dashboard
 export default function AdminDashboard() {
@@ -230,8 +135,8 @@ export default function AdminDashboard() {
       {/* Notification */}
       {notification && (
         <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${notification.type === 'success' ? 'bg-green-600' :
-            notification.type === 'warning' ? 'bg-yellow-600' :
-              'bg-red-600'
+          notification.type === 'warning' ? 'bg-yellow-600' :
+            'bg-red-600'
           } text-white font-medium`}>
           {notification.message}
         </div>

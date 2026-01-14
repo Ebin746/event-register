@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Camera, XCircle } from "lucide-react";
+import jsQR from "jsqr";
 
 interface QRScannerProps {
   onScan: (ticketId: string) => void;
@@ -25,9 +26,17 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          videoRef.current.play();
-          setScanning(true);
-          scanQRCode();
+
+          // Wait for video metadata to load before playing
+          videoRef.current.onloadedmetadata = () => {
+            videoRef.current?.play().then(() => {
+              setScanning(true);
+              scanQRCode();
+            }).catch(err => {
+              console.error("Video play error:", err);
+              setError("Unable to start camera preview.");
+            });
+          };
         }
       } catch (err) {
         setError("Unable to access camera. Please check permissions.");
@@ -53,17 +62,19 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
 
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
-      // Simple QR code detection (in production, use a library like jsQR)
-      // This is a placeholder - you should install and use jsQR library
       try {
-        // const code = jsQR(imageData.data, imageData.width, imageData.height);
-        // if (code && code.data) {
-        //   onScan(code.data);
-        //   if (stream) {
-        //     stream.getTracks().forEach(track => track.stop());
-        //   }
-        //   return;
-        // }
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "dontInvert",
+        });
+
+        if (code && code.data) {
+          console.log("QR Code detected:", code.data);
+          onScan(code.data);
+          if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+          }
+          return;
+        }
       } catch (err) {
         console.error("QR scan error:", err);
       }
@@ -127,10 +138,7 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
 
           <div className="mt-4 text-center">
             <p className="text-xs text-gray-500">
-              Note: For production, install jsQR library for QR code detection
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              npm install jsqr @types/jsqr
+              {scanning ? "Scanning for QR codes..." : "Initializing camera..."}
             </p>
           </div>
         </div>
