@@ -15,7 +15,7 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
 
   useEffect(() => {
     let stream: MediaStream | null = null;
-    let animationFrame: number;
+    let animationFrame: number | undefined;
 
     const startCamera = async () => {
       try {
@@ -52,7 +52,7 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      
+
       // Simple QR code detection (in production, use a library like jsQR)
       // This is a placeholder - you should install and use jsQR library
       try {
@@ -112,7 +112,7 @@ export default function QRScanner({ onScan, onClose }: QRScannerProps) {
                 muted
               />
               <canvas ref={canvasRef} className="hidden" />
-              
+
               {/* Scanning overlay */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-64 h-64 border-4 border-green-500 rounded-lg">

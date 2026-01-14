@@ -34,7 +34,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onClose }) => {
 
   useEffect(() => {
     let stream: MediaStream | null = null;
-    let animationFrame: number;
+    let animationFrame: number | undefined;
 
     const startCamera = async () => {
       try {
@@ -97,7 +97,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onClose }) => {
                 muted
               />
               <canvas ref={canvasRef} className="hidden" />
-              
+
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-48 h-48 border-4 border-green-500 rounded-lg relative">
                   <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-white"></div>
@@ -157,11 +157,11 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/teams');
       const data = await res.json();
-      
+
       const teamsData: Team[] = data.teams || [];
       setTeams(teamsData);
       setFilteredTeams(teamsData);
-      
+
       const verified = teamsData.filter(t => t.checkedIn).length;
       setStats({
         total: teamsData.length,
@@ -229,11 +229,10 @@ export default function AdminDashboard() {
 
       {/* Notification */}
       {notification && (
-        <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${
-          notification.type === 'success' ? 'bg-green-600' :
-          notification.type === 'warning' ? 'bg-yellow-600' :
-          'bg-red-600'
-        } text-white font-medium`}>
+        <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${notification.type === 'success' ? 'bg-green-600' :
+            notification.type === 'warning' ? 'bg-yellow-600' :
+              'bg-red-600'
+          } text-white font-medium`}>
           {notification.message}
         </div>
       )}
@@ -308,9 +307,8 @@ export default function AdminDashboard() {
             filteredTeams.map((team) => (
               <div
                 key={team._id}
-                className={`bg-white rounded-lg p-4 border-l-4 ${
-                  team.checkedIn ? 'border-green-500 bg-green-50' : 'border-orange-500'
-                }`}
+                className={`bg-white rounded-lg p-4 border-l-4 ${team.checkedIn ? 'border-green-500 bg-green-50' : 'border-orange-500'
+                  }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -323,7 +321,7 @@ export default function AdminDashboard() {
                         </span>
                       )}
                     </div>
-                    
+
                     <div className="space-y-1 text-sm">
                       <p className="text-gray-600">
                         <span className="font-medium">Ticket:</span> {team.ticketId}
