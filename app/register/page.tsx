@@ -23,7 +23,7 @@ export default function RegisterPage() {
     if (!form.teamName.trim()) newErrors.teamName = "Team name is required";
     if (!form.idea.trim()) newErrors.idea = "Event idea is required";
     if (!form.leaderName.trim()) newErrors.leaderName = "Leader name is required";
-    
+
     if (!form.leaderEmail.trim()) {
       newErrors.leaderEmail = "Leader email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.leaderEmail)) {
@@ -119,7 +119,7 @@ export default function RegisterPage() {
 
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
             <div className="bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 h-2"></div>
-            
+
             <div className="p-8">
               <div className="text-center mb-8">
                 <p className="text-sm font-medium text-gray-500 mb-2">TICKET ID</p>
@@ -193,7 +193,7 @@ export default function RegisterPage() {
         {/* Form Card */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 h-2"></div>
-          
+
           <div className="p-8">
             {error && (
               <div className="mb-8 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
@@ -218,11 +218,10 @@ export default function RegisterPage() {
                   <input
                     type="text"
                     value={form.teamName}
-                    onChange={e => setForm({...form, teamName: e.target.value})}
+                    onChange={e => setForm({ ...form, teamName: e.target.value })}
                     placeholder="Enter your team name"
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                      errors.teamName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.teamName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                      }`}
                   />
                 </div>
                 {errors.teamName && <p className="text-red-600 text-sm mt-2 ml-1">{errors.teamName}</p>}
@@ -238,12 +237,11 @@ export default function RegisterPage() {
                   </div>
                   <textarea
                     value={form.idea}
-                    onChange={e => setForm({...form, idea: e.target.value})}
+                    onChange={e => setForm({ ...form, idea: e.target.value })}
                     placeholder="Describe your innovative event idea"
                     rows={4}
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none text-gray-900 placeholder-gray-400 ${
-                      errors.idea ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none text-gray-900 placeholder-gray-400 ${errors.idea ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                      }`}
                   />
                 </div>
                 {errors.idea && <p className="text-red-600 text-sm mt-2 ml-1">{errors.idea}</p>}
@@ -261,11 +259,10 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       value={form.leaderName}
-                      onChange={e => setForm({...form, leaderName: e.target.value})}
+                      onChange={e => setForm({ ...form, leaderName: e.target.value })}
                       placeholder="Leader name"
-                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                        errors.leaderName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                      }`}
+                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.leaderName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                        }`}
                     />
                   </div>
                   {errors.leaderName && <p className="text-red-600 text-sm mt-2 ml-1">{errors.leaderName}</p>}
@@ -282,11 +279,10 @@ export default function RegisterPage() {
                     <input
                       type="email"
                       value={form.leaderEmail}
-                      onChange={e => setForm({...form, leaderEmail: e.target.value})}
+                      onChange={e => setForm({ ...form, leaderEmail: e.target.value })}
                       placeholder="leader@example.com"
-                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                        errors.leaderEmail ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                      }`}
+                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.leaderEmail ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                        }`}
                     />
                   </div>
                   {errors.leaderEmail && <p className="text-red-600 text-sm mt-2 ml-1">{errors.leaderEmail}</p>}
@@ -303,12 +299,11 @@ export default function RegisterPage() {
                   </div>
                   <textarea
                     value={form.members}
-                    onChange={e => setForm({...form, members: e.target.value})}
+                    onChange={e => setForm({ ...form, members: e.target.value })}
                     placeholder="John Doe, Jane Smith, Mike Johnson"
                     rows={3}
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none text-gray-900 placeholder-gray-400 ${
-                      errors.members ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none text-gray-900 placeholder-gray-400 ${errors.members ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                      }`}
                   />
                 </div>
                 {errors.members && <p className="text-red-600 text-sm mt-2 ml-1">{errors.members}</p>}
