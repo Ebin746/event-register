@@ -2,15 +2,39 @@
 import React, { useState, useEffect } from 'react';
 import { Search, QrCode, CheckCircle, XCircle, Users, Clock, Check, AlertCircle } from 'lucide-react';
 
+// Type definitions
+interface Team {
+  _id: string;
+  ticketId: string;
+  teamName: string;
+  leaderName: string;
+  leaderEmail: string;
+  idea: string;
+  members?: string[];
+  checkedIn: boolean;
+  checkedInAt?: string;
+  createdAt: string;
+}
+
+interface QRScannerProps {
+  onScan: (ticketId: string) => void;
+  onClose: () => void;
+}
+
+interface NotificationType {
+  message: string;
+  type: 'success' | 'warning' | 'error';
+}
+
 // QR Scanner Component
-const QRScanner = ({ onScan, onClose }) => {
-  const videoRef = React.useRef(null);
-  const canvasRef = React.useRef(null);
-  const [error, setError] = useState('');
+const QRScanner: React.FC<QRScannerProps> = ({ onScan, onClose }) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    let stream = null;
-    let animationFrame;
+    let stream: MediaStream | null = null;
+    let animationFrame: number;
 
     const startCamera = async () => {
       try {
@@ -103,13 +127,13 @@ const QRScanner = ({ onScan, onClose }) => {
 
 // Main Admin Dashboard
 export default function AdminDashboard() {
-  const [teams, setTeams] = useState([]);
-  const [filteredTeams, setFilteredTeams] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [showScanner, setShowScanner] = useState(false);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showScanner, setShowScanner] = useState<boolean>(false);
   const [stats, setStats] = useState({ total: 0, verified: 0, pending: 0 });
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState<NotificationType | null>(null);
 
   useEffect(() => {
     fetchTeams();
@@ -134,7 +158,7 @@ export default function AdminDashboard() {
       const res = await fetch('/api/teams');
       const data = await res.json();
       
-      const teamsData = data.teams || [];
+      const teamsData: Team[] = data.teams || [];
       setTeams(teamsData);
       setFilteredTeams(teamsData);
       
@@ -150,7 +174,7 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
-  const verifyTeam = async (ticketId) => {
+  const verifyTeam = async (ticketId: string) => {
     try {
       const res = await fetch('/api/checkin', {
         method: 'POST',
@@ -174,12 +198,12 @@ export default function AdminDashboard() {
     }
   };
 
-  const showNotification = (message, type) => {
+  const showNotification = (message: string, type: 'success' | 'warning' | 'error') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
   };
 
-  const handleQRScan = (ticketId) => {
+  const handleQRScan = (ticketId: string) => {
     verifyTeam(ticketId);
   };
 

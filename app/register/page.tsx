@@ -141,7 +141,7 @@ export default function RegisterPage() {
                   </div>
                   <div className="text-sm text-blue-900">
                     <p className="font-medium mb-1">Important</p>
-                    <p>Please save this QR code. You'll need to present it at the event entrance.</p>
+                    <p>Please save this QR code. You will need to present it at the event entrance.</p>
                   </div>
                 </div>
               </div>
