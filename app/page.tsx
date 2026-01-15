@@ -2,9 +2,26 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Calendar, MapPin, Clock, Users, ChevronDown, Sparkles, Code, Coffee } from "lucide-react";
+import { useUser, useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { isSignedIn } = useUser();
+  const { openSignIn } = useClerk();
+  const router = useRouter();
+
+  const handleRegisterClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isSignedIn) {
+      router.push("/register");
+    } else {
+      openSignIn({
+        fallbackRedirectUrl: "/register",
+        signUpFallbackRedirectUrl: "/register",
+      });
+    }
+  };
 
   const faqs = [
     {
@@ -54,6 +71,7 @@ export default function Home() {
               <Coffee className="w-8 h-8 text-red-400/40" />
             </div>
 
+
             {/* GDG Logo Text */}
             <div className="inline-block animate-fade-in-up">
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-3">
@@ -80,18 +98,19 @@ export default function Home() {
 
             {/* CTA Button */}
             <div className="animate-fade-in-up animation-delay-600">
-              <Link href="/register">
-                <button className="group relative px-6 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
-                  <span className="relative z-10 flex items-center gap-2 justify-center">
-                    <Sparkles className="w-5 h-5 animate-pulse" />
-                    Register Your Team Now
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
-                  </div>
-                </button>
-              </Link>
+              <button
+                onClick={handleRegisterClick}
+                className="group relative px-6 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2 justify-center">
+                  <Sparkles className="w-5 h-5 animate-pulse" />
+                  Register Your Team Now
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
+                </div>
+              </button>
             </div>
           </div>
         </div>
@@ -233,11 +252,12 @@ export default function Home() {
             <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-blue-100 animate-fade-in-up animation-delay-200">
               Don't miss out on this amazing Study Jam!
             </p>
-            <Link href="/register">
-              <button className="px-8 sm:px-10 py-3 sm:py-4 bg-white text-blue-600 text-base sm:text-lg font-bold rounded-full shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-300 hover:bg-gray-50 animate-fade-in-up animation-delay-400">
-                Register Now →
-              </button>
-            </Link>
+            <button
+              onClick={handleRegisterClick}
+              className="px-8 sm:px-10 py-3 sm:py-4 bg-white text-blue-600 text-base sm:text-lg font-bold rounded-full shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-300 hover:bg-gray-50 animate-fade-in-up animation-delay-400"
+            >
+              Register Now →
+            </button>
           </div>
         </div>
       </section>

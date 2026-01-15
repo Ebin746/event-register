@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate unique ticket ID
-    const ticketId = `EVT-${nanoid(8).toUpperCase()}`;
+    const ticketId = `GDG_SOE-${nanoid(8).toUpperCase()}`;
 
     // Create user record
     const user = await User.create({

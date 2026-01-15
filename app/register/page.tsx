@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { Loader2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar, Ticket } from "lucide-react";
 import TicketDisplay from "@/components/TicketDisplay";
 
@@ -17,6 +18,7 @@ interface TicketData {
 
 export default function RegisterPage() {
   const { user, isLoaded, isSignedIn } = useUser();
+  const router = useRouter();
 
   const [form, setForm] = useState({
     name: "",
@@ -161,30 +163,26 @@ export default function RegisterPage() {
   // Not signed in
   if (!isSignedIn) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
-        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
-          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex gap-1">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              </div>
-              <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center border border-gray-100 animate-fade-in-up">
+          <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Ticket className="w-10 h-10" />
           </div>
-        </div>
-
-        <div className="max-w-2xl mx-auto px-6 py-16 text-center">
-          <h1 className="text-5xl font-normal text-gray-900 mb-4">Study Jam Registration</h1>
-          <p className="text-xl text-gray-600 mb-8">Please sign in to register for the event</p>
-
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Auth Required</h2>
+          <p className="text-gray-600 mb-8 text-lg">
+            Please sign in to register for the GDG Study Jam and claim your ticket.
+          </p>
           <SignInButton mode="modal">
-            <button className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-              Sign In to Register
+            <button className="w-full py-4 bg-blue-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300">
+              Sign In to Continue
             </button>
           </SignInButton>
+          <button
+            onClick={() => router.push("/")}
+            className="mt-6 text-gray-500 hover:text-gray-700 font-medium transition-colors"
+          >
+            ← Back to Home
+          </button>
         </div>
       </div>
     );

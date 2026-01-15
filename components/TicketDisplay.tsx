@@ -27,13 +27,13 @@ export default function TicketDisplay({
     onClose
 }: TicketDisplayProps) {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 sm:p-6">
+        <div className="flex flex-col items-center justify-center min-h-[80vh] p-3 sm:p-6">
             <div className="w-full max-w-4xl bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-gray-100 animate-fade-in-up">
                 {/* Header Bar */}
                 <div className="bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 h-1.5"></div>
 
-                <div className="p-5 sm:p-8">
-                    <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                <div className="p-4 sm:p-8">
+                    <div className="flex flex-col md:flex-row gap-5 md:gap-8 items-center md:items-start">
 
                         {/* Left Side: QR & ID */}
                         <div className="flex flex-col items-center w-full md:w-1/3 space-y-4">
@@ -61,9 +61,9 @@ export default function TicketDisplay({
                         <div className="flex flex-col w-full md:w-2/3 justify-between h-full space-y-6">
 
                             {/* User Details Grid */}
-                            <div className="bg-slate-50/80 rounded-xl p-5 border border-slate-100">
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Attendee Details</h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+                            <div className="bg-slate-50/80 rounded-xl p-4 sm:p-5 border border-slate-100">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 border-b border-slate-200 pb-2">Attendee Details</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
                                     {name && (
                                         <div className="flex items-center gap-2.5">
                                             <div className="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><UserIcon className="w-3.5 h-3.5" /></div>
@@ -92,7 +92,7 @@ export default function TicketDisplay({
                                         </div>
                                     )}
                                     {department && (
-                                        <div className="flex items-center gap-2.5">
+                                        <div className="hidden sm:flex items-center gap-2.5">
                                             <div className="p-1.5 bg-yellow-100 text-yellow-600 rounded-lg"><Building className="w-3.5 h-3.5" /></div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 font-medium uppercase">Department</p>
@@ -101,7 +101,7 @@ export default function TicketDisplay({
                                         </div>
                                     )}
                                     {campus && (
-                                        <div className="flex items-center gap-2.5">
+                                        <div className="hidden sm:flex items-center gap-2.5">
                                             <div className="p-1.5 bg-purple-100 text-purple-600 rounded-lg"><GraduationCap className="w-3.5 h-3.5" /></div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 font-medium uppercase">Campus</p>
@@ -110,7 +110,7 @@ export default function TicketDisplay({
                                         </div>
                                     )}
                                     {year && (
-                                        <div className="flex items-center gap-2.5">
+                                        <div className="hidden sm:flex items-center gap-2.5">
                                             <div className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg"><Calendar className="w-3.5 h-3.5" /></div>
                                             <div>
                                                 <p className="text-[10px] text-gray-500 font-medium uppercase">Year</p>
