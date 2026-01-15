@@ -1,7 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
-import { Loader2, Download, CheckCircle2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar } from "lucide-react";
+import { Loader2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar, Ticket } from "lucide-react";
+import TicketDisplay from "@/components/TicketDisplay";
+
+interface TicketData {
+  ticketId: string;
+  qr: string;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
+  campus: string;
+  year: string;
+}
 
 export default function RegisterPage() {
   const { user, isLoaded, isSignedIn } = useUser();
@@ -15,9 +27,10 @@ export default function RegisterPage() {
     year: ""
   });
 
-  const [qr, setQr] = useState<string | null>(null);
-  const [ticketId, setTicketId] = useState("");
+  const [ticketData, setTicketData] = useState<TicketData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingRegistration, setCheckingRegistration] = useState(true);
+  const [isRegistered, setIsRegistered] = useState(false);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -31,6 +44,42 @@ export default function RegisterPage() {
       }));
     }
   }, [user]);
+
+  // Check if user is already registered
+  useEffect(() => {
+    if (isSignedIn) {
+      checkRegistration();
+    }
+  }, [isSignedIn]);
+
+  const checkRegistration = async () => {
+    setCheckingRegistration(true);
+    try {
+      const res = await fetch("/api/ticket");
+      const data = await res.json();
+
+      if (res.ok && data.registered) {
+        setIsRegistered(true);
+        setTicketData({
+          ticketId: data.ticketId,
+          qr: data.qr,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          department: data.department,
+          campus: data.campus,
+          year: data.year
+        });
+      } else {
+        setIsRegistered(false);
+      }
+    } catch (err) {
+      console.error("Error checking registration:", err);
+      setIsRegistered(false);
+    } finally {
+      setCheckingRegistration(false);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -71,8 +120,17 @@ export default function RegisterPage() {
       }
 
       const data = await res.json();
-      setQr(data.qr);
-      setTicketId(data.ticketId);
+      setTicketData({
+        ticketId: data.ticketId,
+        qr: data.qr,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        department: form.department,
+        campus: form.campus,
+        year: form.year
+      });
+      setIsRegistered(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -81,33 +139,21 @@ export default function RegisterPage() {
   };
 
   const downloadQR = () => {
-    if (!qr) return;
+    if (!ticketData) return;
     const link = document.createElement('a');
-    link.href = qr;
-    link.download = `gdg-study-jam-ticket-${ticketId}.png`;
+    link.href = ticketData.qr;
+    link.download = `gdg-study-jam-ticket-${ticketData.ticketId}.png`;
     link.click();
   };
 
-  const resetForm = () => {
-    setForm({
-      name: user?.fullName || "",
-      email: user?.emailAddresses[0]?.emailAddress || "",
-      phone: "",
-      department: "",
-      campus: "",
-      year: ""
-    });
-    setQr(null);
-    setTicketId("");
-    setError("");
-    setErrors({});
-  };
-
   // Loading state
-  if (!isLoaded) {
+  if (!isLoaded || checkingRegistration) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -144,8 +190,8 @@ export default function RegisterPage() {
     );
   }
 
-  // Success page
-  if (qr) {
+  // Already registered - show ticket
+  if (isRegistered && ticketData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
         <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
@@ -163,54 +209,17 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <div className="max-w-2xl mx-auto px-6 py-16">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-6 shadow-lg">
-              <CheckCircle2 className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-5xl font-normal text-gray-900 mb-4">All set!</h1>
-            <p className="text-xl text-gray-600">You have been successfully registered</p>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
-            <div className="bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 h-2"></div>
-
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <p className="text-sm font-medium text-gray-500 mb-2">TICKET ID</p>
-                <p className="text-3xl font-mono font-medium text-gray-900">{ticketId}</p>
-              </div>
-
-              <div className="flex justify-center mb-8">
-                <div className="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
-                  <img src={qr} alt="QR Code" className="w-72 h-72" />
-                </div>
-              </div>
-
-              <div className="bg-blue-50 rounded-lg p-6 border border-blue-100">
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0">
-                    <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div className="text-sm text-blue-900">
-                    <p className="font-medium mb-1">Important</p>
-                    <p>Please save this QR code. You will need to present it at the event entrance.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={downloadQR}
-            className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-blue-700 transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-3"
-          >
-            <Download className="w-5 h-5" />
-            Download Ticket
-          </button>
-        </div>
+        <TicketDisplay
+          ticketId={ticketData.ticketId}
+          qr={ticketData.qr}
+          name={ticketData.name}
+          email={ticketData.email}
+          phone={ticketData.phone}
+          department={ticketData.department}
+          campus={ticketData.campus}
+          year={ticketData.year}
+          onDownload={downloadQR}
+        />
       </div>
     );
   }
