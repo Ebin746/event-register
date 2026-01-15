@@ -37,12 +37,14 @@ export default function TicketDisplay({
 
                         {/* Left Side: QR & ID */}
                         <div className="flex flex-col items-center w-full md:w-1/3 space-y-4">
-                            <div className="text-center">
-                                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full mb-2">
-                                    <CheckCircle2 className="w-6 h-6" />
+                            <div className="flex flex-row sm:flex-col items-center justify-center gap-3 sm:gap-0 sm:text-center">
+                                <div className="inline-flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 bg-green-100 text-green-600 rounded-full sm:mb-2">
+                                    <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-800">Registration Confirmed</h2>
-                                <p className="text-sm text-gray-500">You are all set!</p>
+                                <div className="text-left sm:text-center">
+                                    <h2 className="text-lg sm:text-xl font-bold text-gray-800">Registration Confirmed</h2>
+                                    <p className="text-sm text-gray-500 hidden sm:block">You are all set!</p>
+                                </div>
                             </div>
 
                             <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
@@ -55,10 +57,38 @@ export default function TicketDisplay({
                                     <p className="text-lg font-mono font-bold text-gray-800 tracking-tight break-all">{ticketId}</p>
                                 </div>
                             </div>
+
+                            {/* Actions moved to left column for better mobile flow */}
+                            <div className="flex flex-col gap-3 w-full pt-2">
+                                <button
+                                    onClick={onDownload}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
+                                >
+                                    <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                    Download Ticket
+                                </button>
+                                {onClose && (
+                                    <button
+                                        onClick={onClose}
+                                        className="sm:hidden bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 text-sm font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center"
+                                        aria-label="Close"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {/* Right Side: Details & Actions */}
-                        <div className="flex flex-col w-full md:w-2/3 justify-between h-full space-y-6">
+                        <div className="flex flex-col w-full md:w-2/3 justify-between h-full space-y-4 sm:space-y-6">
+
+                            {/* Notice Moved Up */}
+                            <div className="bg-amber-50 rounded-lg p-3 border border-amber-100 flex items-start gap-3">
+                                <div className="text-amber-500 mt-0.5"><CheckCircle2 className="w-4 h-4" /></div>
+                                <p className="text-xs text-amber-800 leading-relaxed">
+                                    <strong>Important:</strong> Show this QR code at the event entrance for check-in.
+                                </p>
+                            </div>
 
                             {/* User Details Grid */}
                             <div className="bg-slate-50/80 rounded-xl p-4 sm:p-5 border border-slate-100">
@@ -121,24 +151,11 @@ export default function TicketDisplay({
                                 </div>
                             </div>
 
-                            {/* Notice */}
-                            <div className="bg-amber-50 rounded-lg p-3 border border-amber-100 flex items-start gap-3">
-                                <div className="text-amber-500 mt-0.5"><CheckCircle2 className="w-4 h-4" /></div>
-                                <p className="text-xs text-amber-800 leading-relaxed">
-                                    <strong>Important:</strong> Show this QR code at the event entrance for check-in.
-                                </p>
-                            </div>
 
-                            {/* Actions */}
-                            <div className="flex gap-3 pt-2">
-                                <button
-                                    onClick={onDownload}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
-                                >
-                                    <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                    Download Ticket
-                                </button>
-                                {onClose && (
+
+                            {/* Actions for Desktop Header (Optional: User button if needed in future) */}
+                            {onClose && (
+                                <div className="hidden sm:flex justify-end pt-2">
                                     <button
                                         onClick={onClose}
                                         className="bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 text-sm font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center"
@@ -146,8 +163,8 @@ export default function TicketDisplay({
                                     >
                                         <X className="w-5 h-5" />
                                     </button>
-                                )}
-                            </div>
+                                </div>
+                            )}
 
                         </div>
                     </div>
