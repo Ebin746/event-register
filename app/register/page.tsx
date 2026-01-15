@@ -1,14 +1,18 @@
 "use client";
-import { useState } from "react";
-import { Loader2, Download, CheckCircle2, Users, Lightbulb, Mail, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
+import { Loader2, Download, CheckCircle2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar } from "lucide-react";
 
 export default function RegisterPage() {
+  const { user, isLoaded, isSignedIn } = useUser();
+
   const [form, setForm] = useState({
-    teamName: "",
-    idea: "",
-    leaderName: "",
-    leaderEmail: "",
-    members: ""
+    name: "",
+    email: "",
+    phone: "",
+    department: "",
+    campus: "",
+    year: ""
   });
 
   const [qr, setQr] = useState<string | null>(null);
@@ -17,22 +21,25 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Auto-fill email and name from Clerk user
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        email: user.emailAddresses[0]?.emailAddress || "",
+        name: user.fullName || ""
+      }));
+    }
+  }, [user]);
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!form.teamName.trim()) newErrors.teamName = "Team name is required";
-    if (!form.idea.trim()) newErrors.idea = "Event idea is required";
-    if (!form.leaderName.trim()) newErrors.leaderName = "Leader name is required";
-
-    if (!form.leaderEmail.trim()) {
-      newErrors.leaderEmail = "Leader email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.leaderEmail)) {
-      newErrors.leaderEmail = "Please enter a valid email";
-    }
-
-    if (!form.members.trim()) {
-      newErrors.members = "At least one team member is required";
-    }
+    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.phone.trim()) newErrors.phone = "Phone number is required";
+    if (!form.department.trim()) newErrors.department = "Department is required";
+    if (!form.campus.trim()) newErrors.campus = "Campus is required";
+    if (!form.year.trim()) newErrors.year = "Year is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,8 +57,11 @@ export default function RegisterPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...form,
-          members: form.members.split(",").map(m => m.trim()).filter(Boolean)
+          name: form.name,
+          phone: form.phone,
+          department: form.department,
+          campus: form.campus,
+          year: form.year
         })
       });
 
@@ -74,17 +84,18 @@ export default function RegisterPage() {
     if (!qr) return;
     const link = document.createElement('a');
     link.href = qr;
-    link.download = `gdg-event-ticket-${ticketId}.png`;
+    link.download = `gdg-study-jam-ticket-${ticketId}.png`;
     link.click();
   };
 
   const resetForm = () => {
     setForm({
-      teamName: "",
-      idea: "",
-      leaderName: "",
-      leaderEmail: "",
-      members: ""
+      name: user?.fullName || "",
+      email: user?.emailAddresses[0]?.emailAddress || "",
+      phone: "",
+      department: "",
+      campus: "",
+      year: ""
     });
     setQr(null);
     setTicketId("");
@@ -92,19 +103,63 @@ export default function RegisterPage() {
     setErrors({});
   };
 
+  // Loading state
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  // Not signed in
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-2xl mx-auto px-6 py-16 text-center">
+          <h1 className="text-5xl font-normal text-gray-900 mb-4">Study Jam Registration</h1>
+          <p className="text-xl text-gray-600 mb-8">Please sign in to register for the event</p>
+
+          <SignInButton mode="modal">
+            <button className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              Sign In to Register
+            </button>
+          </SignInButton>
+        </div>
+      </div>
+    );
+  }
+
+  // Success page
   if (qr) {
     return (
-      <div className="min-h-screen bg-white">
-        {/* GDG Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-3">
-            <div className="flex gap-1">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
             </div>
-            <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
+            <UserButton />
           </div>
         </div>
 
@@ -114,10 +169,10 @@ export default function RegisterPage() {
               <CheckCircle2 className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-5xl font-normal text-gray-900 mb-4">All set!</h1>
-            <p className="text-xl text-gray-600">Your team has been successfully registered</p>
+            <p className="text-xl text-gray-600">You have been successfully registered</p>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
             <div className="bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 h-2"></div>
 
             <div className="p-8">
@@ -148,50 +203,43 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={downloadQR}
-              className="flex-1 bg-blue-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-blue-700 transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-3"
-            >
-              <Download className="w-5 h-5" />
-              Download Ticket
-            </button>
-            <button
-              onClick={resetForm}
-              className="flex-1 bg-white text-gray-700 py-4 px-6 rounded-lg font-medium hover:bg-gray-50 transition-all border border-gray-300 flex items-center justify-center gap-3"
-            >
-              Register Another Team
-            </button>
-          </div>
+          <button
+            onClick={downloadQR}
+            className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-blue-700 transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-3"
+          >
+            <Download className="w-5 h-5" />
+            Download Ticket
+          </button>
         </div>
       </div>
     );
   }
 
+  // Registration form
   return (
-    <div className="min-h-screen bg-white">
-      {/* GDG Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-3">
-          <div className="flex gap-1">
-            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
           </div>
-          <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
+          <UserButton />
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-6 py-16">
-        {/* Hero Section */}
         <div className="mb-12">
-          <h1 className="text-5xl font-normal text-gray-900 mb-4">Event Registration</h1>
-          <p className="text-xl text-gray-600">Join us for an amazing developer experience</p>
+          <h1 className="text-5xl font-normal text-gray-900 mb-4">Study Jam Registration</h1>
+          <p className="text-xl text-gray-600">Join us for an amazing learning experience</p>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 h-2"></div>
 
           <div className="p-8">
@@ -207,107 +255,131 @@ export default function RegisterPage() {
             )}
 
             <div className="space-y-6">
+              {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Team Name
+                  Full Name
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Users className="w-5 h-5 text-gray-400" />
+                    <UserIcon className="w-5 h-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
-                    value={form.teamName}
-                    onChange={e => setForm({ ...form, teamName: e.target.value })}
-                    placeholder="Enter your team name"
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.teamName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                      }`}
+                    value={form.name}
+                    onChange={e => setForm({ ...form, name: e.target.value })}
+                    placeholder="Enter your full name"
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
                   />
                 </div>
-                {errors.teamName && <p className="text-red-600 text-sm mt-2 ml-1">{errors.teamName}</p>}
+                {errors.name && <p className="text-red-600 text-sm mt-2 ml-1">{errors.name}</p>}
               </div>
 
+              {/* Email (read-only) */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Event Idea
+                  Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute top-3.5 left-4 pointer-events-none">
-                    <Lightbulb className="w-5 h-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="w-5 h-5 text-gray-400" />
                   </div>
-                  <textarea
-                    value={form.idea}
-                    onChange={e => setForm({ ...form, idea: e.target.value })}
-                    placeholder="Describe your innovative event idea"
-                    rows={4}
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none text-gray-900 placeholder-gray-400 ${errors.idea ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                      }`}
+                  <input
+                    type="email"
+                    value={form.email}
+                    readOnly
+                    className="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
                   />
                 </div>
-                {errors.idea && <p className="text-red-600 text-sm mt-2 ml-1">{errors.idea}</p>}
+                <p className="text-xs text-gray-500 mt-2 ml-1">Email from your account</p>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="tel"
+                    value={form.phone}
+                    onChange={e => setForm({ ...form, phone: e.target.value })}
+                    placeholder="Enter your phone number"
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
+                  />
+                </div>
+                {errors.phone && <p className="text-red-600 text-sm mt-2 ml-1">{errors.phone}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Department */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Team Leader Name
+                    Department
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <User className="w-5 h-5 text-gray-400" />
+                      <Building className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
                       type="text"
-                      value={form.leaderName}
-                      onChange={e => setForm({ ...form, leaderName: e.target.value })}
-                      placeholder="Leader name"
-                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.leaderName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                        }`}
+                      value={form.department}
+                      onChange={e => setForm({ ...form, department: e.target.value })}
+                      placeholder="e.g., Computer Science"
+                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.department ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
                     />
                   </div>
-                  {errors.leaderName && <p className="text-red-600 text-sm mt-2 ml-1">{errors.leaderName}</p>}
+                  {errors.department && <p className="text-red-600 text-sm mt-2 ml-1">{errors.department}</p>}
                 </div>
 
+                {/* Campus */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Team Leader Email
+                    Campus
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Mail className="w-5 h-5 text-gray-400" />
+                      <GraduationCap className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
-                      type="email"
-                      value={form.leaderEmail}
-                      onChange={e => setForm({ ...form, leaderEmail: e.target.value })}
-                      placeholder="leader@example.com"
-                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.leaderEmail ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                        }`}
+                      type="text"
+                      value={form.campus}
+                      onChange={e => setForm({ ...form, campus: e.target.value })}
+                      placeholder="e.g., SOE CUSAT"
+                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.campus ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
                     />
                   </div>
-                  {errors.leaderEmail && <p className="text-red-600 text-sm mt-2 ml-1">{errors.leaderEmail}</p>}
+                  {errors.campus && <p className="text-red-600 text-sm mt-2 ml-1">{errors.campus}</p>}
                 </div>
               </div>
 
+              {/* Year */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Team Members
+                  Year of Study
                 </label>
                 <div className="relative">
-                  <div className="absolute top-3.5 left-4 pointer-events-none">
-                    <Users className="w-5 h-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Calendar className="w-5 h-5 text-gray-400" />
                   </div>
-                  <textarea
-                    value={form.members}
-                    onChange={e => setForm({ ...form, members: e.target.value })}
-                    placeholder="John Doe, Jane Smith, Mike Johnson"
-                    rows={3}
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none text-gray-900 placeholder-gray-400 ${errors.members ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                  />
+                  <select
+                    value={form.year}
+                    onChange={e => setForm({ ...form, year: e.target.value })}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 ${errors.year ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
+                  >
+                    <option value="">Select your year</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                    <option value="Graduate">Graduate</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
-                {errors.members && <p className="text-red-600 text-sm mt-2 ml-1">{errors.members}</p>}
-                <p className="text-xs text-gray-500 mt-2 ml-1">Separate member names with commas</p>
+                {errors.year && <p className="text-red-600 text-sm mt-2 ml-1">{errors.year}</p>}
               </div>
 
               <button
@@ -318,17 +390,16 @@ export default function RegisterPage() {
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Registering your team...
+                    Registering...
                   </>
                 ) : (
-                  'Register Team'
+                  'Complete Registration'
                 )}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Footer Info */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
             By registering, you agree to our event terms and conditions

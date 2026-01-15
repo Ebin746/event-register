@@ -1,84 +1,124 @@
-import { NextResponse } from "next/server";
-import { connectDB } from "../../../lib/db";
-import Team from "../../../models/Team";
-import QRCode from "qrcode";
+import { NextRequest, NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { nanoid } from "nanoid";
+import QRCode from "qrcode";
+import { connectDB } from "@/lib/db";
+import User from "@/models/User";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    await connectDB();
-    
+    // Get authenticated user from Clerk
+    const clerkUser = await currentUser();
+
+    if (!clerkUser) {
+      return NextResponse.json(
+        { error: "Unauthorized. Please sign in." },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
+    const { name, phone, department, campus, year } = body;
 
-    // Validate required fields
-    const { teamName, idea, leaderName, leaderEmail, members } = body;
-    
-    if (!teamName || !idea || !leaderName || !leaderEmail || !members) {
+    // Validation
+    if (!name?.trim()) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Name is required" },
         { status: 400 }
       );
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(leaderEmail)) {
+    if (!phone?.trim()) {
       return NextResponse.json(
-        { error: "Invalid email format" },
+        { error: "Phone number is required" },
         { status: 400 }
       );
     }
 
-    // Validate members array
-    if (!Array.isArray(members) || members.length === 0) {
+    if (!department?.trim()) {
       return NextResponse.json(
-        { error: "At least one team member is required" },
+        { error: "Department is required" },
         { status: 400 }
       );
     }
 
-    // Check for duplicate email
-    const existingTeam = await Team.findOne({ leaderEmail: leaderEmail.toLowerCase() });
-    if (existingTeam) {
+    if (!campus?.trim()) {
       return NextResponse.json(
-        { error: "A team with this email is already registered" },
+        { error: "Campus is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!year?.trim()) {
+      return NextResponse.json(
+        { error: "Year is required" },
+        { status: 400 }
+      );
+    }
+
+    await connectDB();
+
+    // Check if user already registered
+    const existingUser = await User.findOne({ clerkId: clerkUser.id });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "You have already registered for this event" },
+        { status: 409 }
+      );
+    }
+
+    // Check if email already used
+    const emailExists = await User.findOne({
+      email: clerkUser.emailAddresses[0]?.emailAddress
+    });
+    if (emailExists) {
+      return NextResponse.json(
+        { error: "This email is already registered" },
         { status: 409 }
       );
     }
 
     // Generate unique ticket ID
-    const ticketId = "EVT-" + nanoid(8);
+    const ticketId = `EVT-${nanoid(8).toUpperCase()}`;
 
-    // Create team in database
-    await Team.create({
+    // Create user record
+    const user = await User.create({
+      clerkId: clerkUser.id,
       ticketId,
-      teamName: teamName.trim(),
-      idea: idea.trim(),
-      leaderName: leaderName.trim(),
-      leaderEmail: leaderEmail.toLowerCase().trim(),
-      members: members.map((m: string) => m.trim()).filter(Boolean)
+      name: name.trim(),
+      email: clerkUser.emailAddresses[0]?.emailAddress,
+      phone: phone.trim(),
+      department: department.trim(),
+      campus: campus.trim(),
+      year: year.trim(),
     });
 
-    // Generate QR code with error correction
+    // Generate QR code
     const qr = await QRCode.toDataURL(ticketId, {
-      errorCorrectionLevel: 'H',
+      width: 400,
       margin: 2,
-      width: 300,
       color: {
-        dark: '#000000',
-        light: '#ffffff'
-      }
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
     });
 
-    return NextResponse.json({ 
-      ticketId, 
+    return NextResponse.json({
+      success: true,
+      ticketId: user.ticketId,
       qr,
-      message: "Registration successful"
+      message: "Registration successful!",
     });
-
-  } catch (error) {
+  } catch (error: any) {
     console.error("Registration error:", error);
-    
+
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { error: "This email or ticket ID already exists" },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Registration failed. Please try again." },
       { status: 500 }
