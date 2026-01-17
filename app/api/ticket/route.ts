@@ -20,9 +20,18 @@ export async function GET(req: NextRequest) {
         // Find user by Clerk ID
         const user = await User.findOne({ clerkId: clerkUser.id });
 
+        // Get total registration count
+        const totalRegistrations = await User.countDocuments();
+        const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70");
+
         if (!user) {
             return NextResponse.json(
-                { error: "Not registered", registered: false },
+                {
+                    error: "Not registered",
+                    registered: false,
+                    totalRegistrations,
+                    registrationLimit
+                },
                 { status: 404 }
             );
         }
@@ -48,6 +57,8 @@ export async function GET(req: NextRequest) {
             year: user.year,
             qr,
             createdAt: user.createdAt,
+            totalRegistrations,
+            registrationLimit
         });
     } catch (error) {
         console.error("Ticket fetch error:", error);

@@ -59,11 +59,12 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     // Check registration limit
-    const limit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70", 10);
-    const totalCount = await User.countDocuments();
-    if (totalCount >= limit) {
+    const totalRegistrations = await User.countDocuments();
+    const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70");
+
+    if (totalRegistrations >= registrationLimit) {
       return NextResponse.json(
-        { error: "Registration closed: limit reached" },
+        { error: "Registration is closed. The limit has been reached." },
         { status: 403 }
       );
     }

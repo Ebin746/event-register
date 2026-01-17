@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Loader2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar, Ticket, Users } from "lucide-react";
+import { Loader2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar, Ticket } from "lucide-react";
 import TicketDisplay from "@/components/TicketDisplay";
 
 interface TicketData {
@@ -34,6 +34,7 @@ export default function RegisterPage() {
   const [checkingRegistration, setCheckingRegistration] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [totalRegistrations, setTotalRegistrations] = useState(0);
+  const [registrationLimit, setRegistrationLimit] = useState(70);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,26 +54,16 @@ export default function RegisterPage() {
     if (isSignedIn) {
       checkRegistration();
     }
-    fetchRegistrationCount();
   }, [isSignedIn]);
-
-  const fetchRegistrationCount = async () => {
-    try {
-      const res = await fetch("/api/registration-count");
-      const data = await res.json();
-      if (res.ok) {
-        setTotalRegistrations(data.count);
-      }
-    } catch (err) {
-      console.error("Error fetching count:", err);
-    }
-  };
 
   const checkRegistration = async () => {
     setCheckingRegistration(true);
     try {
       const res = await fetch("/api/ticket");
       const data = await res.json();
+
+      setTotalRegistrations(data.totalRegistrations || 0);
+      setRegistrationLimit(data.registrationLimit || 70);
 
       if (res.ok && data.registered) {
         setIsRegistered(true);
@@ -236,25 +227,41 @@ export default function RegisterPage() {
     );
   }
 
-  // Registration limit reached - show closed message
-  const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70", 10);
+  // Registration Closed UI
   if (!isRegistered && totalRegistrations >= registrationLimit) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center border border-gray-100 animate-fade-in-up">
-          <div className="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Users className="w-10 h-10" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+          <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="text-xl font-normal text-gray-700">Google Developer Groups</span>
+            </div>
+            <UserButton />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Registration Closed</h2>
-          <p className="text-gray-600 mb-8 text-lg">
-            We&apos;ve reached our maximum capacity of {registrationLimit} participants for this Study Jam. Thank you for your interest!
-          </p>
-          <button
-            onClick={() => router.push("/")}
-            className="w-full py-4 bg-gray-100 text-gray-700 text-xl font-bold rounded-2xl hover:bg-gray-200 transition-all duration-300"
-          >
-            Back to Home
-          </button>
+        </div>
+
+        <div className="max-w-2xl mx-auto px-6 py-16">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm overflow-hidden text-center p-12">
+            <div className="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Calendar className="w-10 h-10" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Registration Closed</h2>
+            <p className="text-gray-600 mb-8 text-lg">
+              We've reached the maximum capacity for this event. Thank you for your interest!
+            </p>
+            <button
+              onClick={() => router.push("/")}
+              className="px-8 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-all flex items-center justify-center gap-2 mx-auto"
+            >
+              ← Back to Home
+            </button>
+          </div>
         </div>
       </div>
     );
