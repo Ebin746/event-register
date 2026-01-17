@@ -58,6 +58,16 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
+    // Check registration limit
+    const limit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70", 10);
+    const totalCount = await User.countDocuments();
+    if (totalCount >= limit) {
+      return NextResponse.json(
+        { error: "Registration closed: limit reached" },
+        { status: 403 }
+      );
+    }
+
     // Check if user already registered
     const existingUser = await User.findOne({ clerkId: clerkUser.id });
     if (existingUser) {

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Loader2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar, Ticket } from "lucide-react";
+import { Loader2, User as UserIcon, Mail, Phone, Building, GraduationCap, Calendar, Ticket, Users } from "lucide-react";
 import TicketDisplay from "@/components/TicketDisplay";
 
 interface TicketData {
@@ -33,6 +33,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [checkingRegistration, setCheckingRegistration] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [totalRegistrations, setTotalRegistrations] = useState(0);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -52,7 +53,20 @@ export default function RegisterPage() {
     if (isSignedIn) {
       checkRegistration();
     }
+    fetchRegistrationCount();
   }, [isSignedIn]);
+
+  const fetchRegistrationCount = async () => {
+    try {
+      const res = await fetch("/api/registration-count");
+      const data = await res.json();
+      if (res.ok) {
+        setTotalRegistrations(data.count);
+      }
+    } catch (err) {
+      console.error("Error fetching count:", err);
+    }
+  };
 
   const checkRegistration = async () => {
     setCheckingRegistration(true);
@@ -218,6 +232,30 @@ export default function RegisterPage() {
           year={ticketData.year}
           onDownload={downloadQR}
         />
+      </div>
+    );
+  }
+
+  // Registration limit reached - show closed message
+  const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70", 10);
+  if (!isRegistered && totalRegistrations >= registrationLimit) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center border border-gray-100 animate-fade-in-up">
+          <div className="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Users className="w-10 h-10" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Registration Closed</h2>
+          <p className="text-gray-600 mb-8 text-lg">
+            We&apos;ve reached our maximum capacity of {registrationLimit} participants for this Study Jam. Thank you for your interest!
+          </p>
+          <button
+            onClick={() => router.push("/")}
+            className="w-full py-4 bg-gray-100 text-gray-700 text-xl font-bold rounded-2xl hover:bg-gray-200 transition-all duration-300"
+          >
+            Back to Home
+          </button>
+        </div>
       </div>
     );
   }
