@@ -157,7 +157,7 @@ export default function Home() {
                   Time
                 </p>
                 <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-red-600 transition-colors duration-300">
-                  4:15pm to 6pm
+                  4:00pm to 6pm
                 </p>
               </div>
             </div>
@@ -209,11 +209,14 @@ export default function Home() {
               enhance your skills, and foster connections within our vibrant
               community.
             </p>
+            <p className="text-base font-medium text-gray-800 italic border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50 rounded-r-lg">
+              "So if you are an amateur looking into becoming a pro, welcome! This event offers you the perfect way to hone your skills, without competition OR judgement, and put those skills to good use and cook in <span className="animate-techsprint font-black">TECHSPRINT</span> !"
+            </p>
             <p className="text-base">
               Register now and be part of this exciting learning experience at
               the{" "}
               <span className="font-semibold text-gray-800">
-                  CS1 & CS2, School of Engineering, CUSAT
+                CS1 & CS2, School of Engineering, CUSAT
               </span>
               !
             </p>
@@ -245,18 +248,16 @@ export default function Home() {
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-all duration-500 group-hover:text-blue-600 ${
-                    openFaq === index ? "rotate-180 text-blue-600" : ""
-                  }`}
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-all duration-500 group-hover:text-blue-600 ${openFaq === index ? "rotate-180 text-blue-600" : ""
+                    }`}
                 />
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  openFaq === index
-                    ? "max-h-96 opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${openFaq === index
+                  ? "max-h-96 opacity-100"
+                  : "max-h-0 opacity-0"
+                  }`}
               >
                 <div className="px-5 sm:px-6 pb-4 sm:pb-5 text-gray-600 text-sm sm:text-base leading-relaxed border-t border-gray-100 pt-4 bg-gradient-to-b from-blue-50/30 to-transparent">
                   {faq.answer}
@@ -369,6 +370,33 @@ export default function Home() {
         }
         .animate-fade-in-up {
           animation: fade-in-up 0.6s ease-out forwards;
+        }
+        @keyframes techsprint-wiggle {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05) rotate(1deg); }
+        }
+        .animate-techsprint {
+          display: inline-block;
+          background: linear-gradient(
+            to right, 
+            #4285F4, 
+            #EA4335, 
+            #FBBC05, 
+            #34A853, 
+            #4285F4
+          );
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: 
+            gradient-x 3s linear infinite,
+            techsprint-wiggle 2s ease-in-out infinite;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+        .animate-techsprint:hover {
+          transform: scale(1.2) !important;
+          filter: drop-shadow(0 0 15px rgba(66, 133, 244, 0.3));
         }
         .animation-delay-100 {
           animation-delay: 100ms;
