@@ -43,7 +43,7 @@ export default function RegisterPage() {
   const [checkingRegistration, setCheckingRegistration] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [totalRegistrations, setTotalRegistrations] = useState(0);
-  const [registrationLimit, setRegistrationLimit] = useState(78);
+  const [registrationLimit, setRegistrationLimit] = useState(88);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -72,7 +72,7 @@ export default function RegisterPage() {
       const data = await res.json();
 
       setTotalRegistrations(data.totalRegistrations || 0);
-      setRegistrationLimit(data.registrationLimit || 78);
+      setRegistrationLimit(data.registrationLimit || 88);
 
       if (res.ok && data.registered) {
         setIsRegistered(true);
@@ -359,11 +359,10 @@ export default function RegisterPage() {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder="Enter your full name"
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                      errors.name
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300 hover:border-gray-400"
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.name
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300 hover:border-gray-400"
+                      }`}
                   />
                 </div>
                 {errors.name && (
@@ -410,11 +409,10 @@ export default function RegisterPage() {
                       setForm({ ...form, phone: e.target.value })
                     }
                     placeholder="Enter your phone number"
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                      errors.phone
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300 hover:border-gray-400"
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.phone
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300 hover:border-gray-400"
+                      }`}
                   />
                 </div>
                 {errors.phone && (
@@ -441,11 +439,10 @@ export default function RegisterPage() {
                         setForm({ ...form, department: e.target.value })
                       }
                       placeholder="e.g., Computer Science"
-                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                        errors.department
-                          ? "border-red-500 bg-red-50"
-                          : "border-gray-300 hover:border-gray-400"
-                      }`}
+                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.department
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300 hover:border-gray-400"
+                        }`}
                     />
                   </div>
                   {errors.department && (
@@ -471,11 +468,10 @@ export default function RegisterPage() {
                         setForm({ ...form, campus: e.target.value })
                       }
                       placeholder="e.g., SOE CUSAT"
-                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${
-                        errors.campus
-                          ? "border-red-500 bg-red-50"
-                          : "border-gray-300 hover:border-gray-400"
-                      }`}
+                      className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400 ${errors.campus
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300 hover:border-gray-400"
+                        }`}
                     />
                   </div>
                   {errors.campus && (
@@ -498,11 +494,10 @@ export default function RegisterPage() {
                   <select
                     value={form.year}
                     onChange={(e) => setForm({ ...form, year: e.target.value })}
-                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 ${
-                      errors.year
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300 hover:border-gray-400"
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 ${errors.year
+                      ? "border-red-500 bg-red-50"
+                      : "border-gray-300 hover:border-gray-400"
+                      }`}
                   >
                     <option value="">Select your year</option>
                     <option value="1st Year">1st Year</option>

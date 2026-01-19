@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
         // Get total registration count
         const totalRegistrations = await User.countDocuments();
-        const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "70");
+        const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "88");
 
         if (!user) {
             return NextResponse.json(
