@@ -1,7 +1,16 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Calendar, MapPin, Clock, Users, ChevronDown, Sparkles, Code, Coffee } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Users,
+  ChevronDown,
+  Sparkles,
+  Code,
+  Coffee,
+} from "lucide-react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -26,24 +35,19 @@ export default function Home() {
   const faqs = [
     {
       question: "What is this Study Jam about?",
-      answer: "This is a 2-hour Study Jam session organized by GDG SOE CUSAT. It's an interactive learning event where participants collaborate, learn new technologies, and work on hands-on projects together."
-    },
-    {
-      question: "Do I need to register as a team?",
-      answer: "Yes! You can register as a team of 2-5 members. Make sure to provide all team member details during registration to receive your team QR ticket."
+      answer:
+        "This is a 2-hour Study Jam session organized by GDG SOE CUSAT. It's an interactive learning event where participants collaborate, learn new technologies, and work on hands-on projects together.",
     },
     {
       question: "What should I bring to the event?",
-      answer: "Bring your laptop, QR ticket (you'll receive it after registration), a valid ID, and your enthusiasm to learn! We'll provide refreshments and all necessary materials."
+      answer:
+        "Bring your laptop, QR ticket (you'll receive it after registration), a valid ID, and your enthusiasm to learn! We'll provide refreshments and all necessary materials.",
     },
     {
       question: "Is there any registration fee?",
-      answer: "No, this Study Jam is completely free! Just register your team and show up with your QR ticket on the event day."
+      answer:
+        "No, this Study Jam is completely free! Just register and show up with your QR ticket on the event day.",
     },
-    {
-      question: "What if I don't have a team?",
-      answer: "You can still register! We'll help you connect with other participants at the event to form teams. Just mention in your registration that you're looking for teammates."
-    }
   ];
 
   return (
@@ -71,13 +75,18 @@ export default function Home() {
               <Coffee className="w-8 h-8 text-red-400/40" />
             </div>
 
-
             {/* GDG Logo Text */}
             <div className="inline-block animate-fade-in-up">
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-3">
-                <span className="inline-block hover:scale-125 transition-transform duration-300 cursor-pointer text-blue-500">G</span>
-                <span className="inline-block hover:scale-125 transition-transform duration-300 cursor-pointer text-red-500">D</span>
-                <span className="inline-block hover:scale-125 transition-transform duration-300 cursor-pointer text-yellow-500">G</span>
+                <span className="inline-block hover:scale-125 transition-transform duration-300 cursor-pointer text-blue-500">
+                  G
+                </span>
+                <span className="inline-block hover:scale-125 transition-transform duration-300 cursor-pointer text-red-500">
+                  D
+                </span>
+                <span className="inline-block hover:scale-125 transition-transform duration-300 cursor-pointer text-yellow-500">
+                  G
+                </span>
                 <span className="text-gray-700"> Study Jam</span>
               </h1>
               <div className="h-1.5 bg-gradient-to-r from-blue-500 via-red-500 via-yellow-500 to-green-500 rounded-full animate-gradient-x"></div>
@@ -93,7 +102,8 @@ export default function Home() {
             </div>
 
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4 animate-fade-in-up animation-delay-400 leading-relaxed">
-              Join us for an exciting 2-hour Study Jam filled with hands-on learning, collaboration, and community building
+              Join us for an exciting 2-hour Study Jam filled with hands-on
+              learning, collaboration, and community building
             </p>
 
             {/* CTA Button */}
@@ -104,7 +114,7 @@ export default function Home() {
               >
                 <span className="relative z-10 flex items-center gap-2 justify-center">
                   <Sparkles className="w-5 h-5 animate-pulse" />
-                  Register Your Team Now
+                  Register Now
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -118,7 +128,7 @@ export default function Home() {
 
       {/* Event Details Section */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 relative">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Date Card */}
           <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-200 hover:-translate-y-2 animate-fade-in-up">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -126,8 +136,12 @@ export default function Home() {
                 <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 group-hover:text-white transition-colors duration-500" />
               </div>
               <div>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">Date</p>
-                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300">Coming Tuesday</p>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                  Date
+                </p>
+                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300">
+                  20th Jan 2026
+                </p>
               </div>
             </div>
           </div>
@@ -139,8 +153,12 @@ export default function Home() {
                 <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 group-hover:text-white transition-colors duration-500" />
               </div>
               <div>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">Duration</p>
-                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-red-600 transition-colors duration-300">2 Hours</p>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                  Time
+                </p>
+                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-red-600 transition-colors duration-300">
+                  4:15pm to 6pm
+                </p>
               </div>
             </div>
           </div>
@@ -152,22 +170,13 @@ export default function Home() {
                 <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 group-hover:text-white transition-colors duration-500" />
               </div>
               <div>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">Venue</p>
-                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-yellow-600 transition-colors duration-300">NLP Block</p>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                  Venue
+                </p>
+                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-yellow-600 transition-colors duration-300">
+                  NLP Block
+                </p>
                 <p className="text-xs text-gray-600">SOE, CUSAT</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Team Size Card */}
-          <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-green-200 hover:-translate-y-2 animate-fade-in-up animation-delay-300">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-xl group-hover:from-green-500 group-hover:to-green-600 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 group-hover:text-white transition-colors duration-500" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">Team Size</p>
-                <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-green-600 transition-colors duration-300">2-5 Members</p>
               </div>
             </div>
           </div>
@@ -185,14 +194,28 @@ export default function Home() {
             <div className="h-1 w-12 bg-gradient-to-r from-yellow-500 to-green-500 rounded-full"></div>
           </div>
           <div className="space-y-4 text-gray-700 leading-relaxed">
-            <p className="text-base sm:text-lg">
-              <span className="font-semibold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">GDG SOE CUSAT</span> is excited to bring you an engaging 2-hour <span className="font-semibold text-gray-800">Study Jam</span> that combines hands-on learning, innovation, and networking opportunities.
+            <p className="text-base">
+              <span className="font-semibold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                GDG SOE CUSAT
+              </span>{" "}
+              is excited to bring you an engaging 2-hour{" "}
+              <span className="font-semibold text-gray-800">Study Jam</span>{" "}
+              that combines hands-on learning, innovation, and networking
+              opportunities.
             </p>
-            <p className="text-sm sm:text-base">
-              Whether you're a seasoned developer or just starting your tech journey, this Study Jam is designed to inspire collaboration, enhance your skills, and foster connections within our vibrant community.
+            <p className="text-base">
+              Whether you're a seasoned developer or just starting your tech
+              journey, this Study Jam is designed to inspire collaboration,
+              enhance your skills, and foster connections within our vibrant
+              community.
             </p>
-            <p className="text-sm sm:text-base">
-              Register your team now and be part of this exciting learning experience at the <span className="font-semibold text-gray-800">NLP Block, School of Engineering, CUSAT</span>!
+            <p className="text-base">
+              Register now and be part of this exciting learning experience at
+              the{" "}
+              <span className="font-semibold text-gray-800">
+                NLP Block, School of Engineering, CUSAT
+              </span>
+              !
             </p>
           </div>
         </div>
@@ -222,14 +245,18 @@ export default function Home() {
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-all duration-500 group-hover:text-blue-600 ${openFaq === index ? "rotate-180 text-blue-600" : ""
-                    }`}
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-all duration-500 group-hover:text-blue-600 ${
+                    openFaq === index ? "rotate-180 text-blue-600" : ""
+                  }`}
                 />
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${openFaq === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                  }`}
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                  openFaq === index
+                    ? "max-h-96 opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
               >
                 <div className="px-5 sm:px-6 pb-4 sm:pb-5 text-gray-600 text-sm sm:text-base leading-relaxed border-t border-gray-100 pt-4 bg-gradient-to-b from-blue-50/30 to-transparent">
                   {faq.answer}
@@ -265,7 +292,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="text-center py-8 text-gray-600 relative">
         <p className="text-sm font-medium">
-          Organized by <span className="font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">GDG SOE CUSAT</span>
+          Organized by{" "}
+          <span className="font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+            GDG SOE CUSAT
+          </span>
         </p>
         <p className="text-xs mt-2 text-gray-500">
           © 2026 Google Developer Groups. All rights reserved.
@@ -274,22 +304,45 @@ export default function Home() {
 
       <style jsx>{`
         @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          25% { transform: translate(20px, -20px) scale(1.1); }
-          50% { transform: translate(-20px, 20px) scale(0.9); }
-          75% { transform: translate(20px, 20px) scale(1.05); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          25% {
+            transform: translate(20px, -20px) scale(1.1);
+          }
+          50% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          75% {
+            transform: translate(20px, 20px) scale(1.05);
+          }
         }
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
         }
         @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
         @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
         }
         @keyframes fade-in-up {
           from {
