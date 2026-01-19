@@ -174,7 +174,7 @@ export default function Home() {
                   Venue
                 </p>
                 <p className="text-base sm:text-lg font-bold text-gray-800 group-hover:text-yellow-600 transition-colors duration-300">
-                  NLP Block
+                  CS1 & CS2
                 </p>
                 <p className="text-xs text-gray-600">SOE, CUSAT</p>
               </div>
