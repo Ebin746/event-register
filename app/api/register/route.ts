@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     // Check registration limit
     const totalRegistrations = await User.countDocuments();
-    const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "88");
+    const registrationLimit = parseInt(process.env.NEXT_PUBLIC_REGISTRATION_LIMIT || "82");
 
     if (totalRegistrations >= registrationLimit) {
       return NextResponse.json(

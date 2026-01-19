@@ -43,7 +43,7 @@ export default function RegisterPage() {
   const [checkingRegistration, setCheckingRegistration] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [totalRegistrations, setTotalRegistrations] = useState(0);
-  const [registrationLimit, setRegistrationLimit] = useState(88);
+  const [registrationLimit, setRegistrationLimit] = useState(82);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -72,7 +72,7 @@ export default function RegisterPage() {
       const data = await res.json();
 
       setTotalRegistrations(data.totalRegistrations || 0);
-      setRegistrationLimit(data.registrationLimit || 88);
+      setRegistrationLimit(data.registrationLimit || 82);
 
       if (res.ok && data.registered) {
         setIsRegistered(true);
