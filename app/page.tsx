@@ -213,7 +213,7 @@ export default function Home() {
               Register now and be part of this exciting learning experience at
               the{" "}
               <span className="font-semibold text-gray-800">
-                  CS1 & CS2 Block, School of Engineering, CUSAT
+                  CS1 & CS2, School of Engineering, CUSAT
               </span>
               !
             </p>
