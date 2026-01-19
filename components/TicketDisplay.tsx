@@ -79,7 +79,7 @@ export default function TicketDisplay({
                 </div>
               </div>
 
-              {/* WhatsApp Group Link */}
+              {/* WhatsApp Group Link  */}
               <a
                 href="https://chat.whatsapp.com/IyWFtxgp9Mh29d4K3eIjMB"
                 target="_blank"
